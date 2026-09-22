@@ -1,5 +1,5 @@
 # Formula One
-This project implements an end-to-end Formula 1 data engineering pipeline using Python, FastF1, and Databricks. Formula 1 data is extracted with the FastF1 library and stored locally in a landing layer before being processed through a Medallion Architecture in Databricks: Bronze for raw ingestion, Silver for data cleaning and transformation, and Gold for analytics-ready dimensional modeling using fact and dimension tables. The final layer supports an interactive Databricks dashboard with key Formula 1 performance metrics and insights.
+Este proyecto implementa un flujo de trabajo integral de ingeniería de datos de Fórmula 1 utilizando Python, FastF1 y Databricks. Los datos de Fórmula 1 se extraen con la biblioteca FastF1 y se almacenan localmente en una capa de aterrizaje antes de ser procesados a través de una arquitectura Medallion en Databricks: Bronze para la ingesta de datos sin procesar, Silver para la limpieza y transformación de datos, y Gold para el modelado dimensional listo para el análisis mediante tablas de hechos y dimensiones. La capa final da soporte a un panel interactivo de Databricks con métricas clave de rendimiento e información sobre la Fórmula 1.
 
 # 🏎️ Formula 1 Lakehouse Analytics
 
