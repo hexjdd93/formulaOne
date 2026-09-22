@@ -12,33 +12,19 @@ Construir una plataforma analítica de **Formula 1** utilizando una arquitectura
 Fuente de datos
 
       │
-
       ▼
-
    Landing
-
       │
-
       ▼
-
    Bronze
-
       │
-
       ▼
-
    Silver
-
       │
-
       ▼
-
     Gold
-
       │
-
       ▼
-
 Dashboard / BI
 
 ```
@@ -46,15 +32,10 @@ Dashboard / BI
 El proyecto busca simular una arquitectura de datos real en la nube, separando claramente:
 
 - adquisición de datos;
-
 - almacenamiento raw;
-
 - procesamiento incremental;
-
 - limpieza y normalización;
-
 - modelado analítico;
-
 - consumo mediante dashboards.
 
 ---
@@ -92,23 +73,14 @@ La arquitectura sigue el patrón:
 ```text
 
 Landing
-
   ↓
-
 Bronze
-
   ↓
-
 Silver
-
   ↓
-
 Gold
-
   ↓
-
 Dashboard
-
 ```
 
 Cada capa tiene una responsabilidad diferente.
@@ -124,13 +96,9 @@ Cada capa tiene una responsabilidad diferente.
 En un entorno productivo, esta capa podría ser alimentada por:
 
 - Azure Functions;
-
 - AWS Lambda;
-
 - pipelines;
-
 - jobs programados;
-
 - APIs externas.
 
 En este proyecto, los archivos inicialmente pueden generarse localmente y cargarse al volumen para simular ese proceso.
@@ -144,97 +112,51 @@ Los datos se organizan utilizando particiones estilo Hive:
 ```text
 
 landing/
-
 │
-
 ├── events/
-
 │   └── season=2025/
-
 │       └── events.parquet
-
 │
-
 ├── drivers/
-
 │   └── season=2025/
-
 │       └── drivers.parquet
-
 │
-
 ├── constructors/
-
 │   └── season=2025/
-
 │       └── constructors.parquet
-
 │
-
 ├── race_results/
-
 │   └── season=2025/
-
 │       ├── round=01/
-
 │       │   └── race_results.parquet
-
 │       ├── round=02/
-
 │       │   └── race_results.parquet
-
 │       └── round=03/
-
 │           └── race_results.parquet
-
 │
-
 ├── qualifying_results/
-
 │   └── season=2025/
-
 │       ├── round=01/
-
 │       │   └── qualifying_results.parquet
-
 │       └── ...
-
 │
-
 ├── laps/
-
 │   └── season=2025/
-
 │       ├── round=01/
-
 │       │   └── laps_results.parquet
-
 │       └── ...
-
 │
-
 ├── pit_stops/
-
 │   └── season=2025/
-
 │       ├── round=01/
-
 │       │   └── pit_stops.parquet
-
 │       └── ...
-
 │
-
 └── weather/
-
     └── season=2025/
-
         ├── round=01/
-
         │   └── weather_data.parquet
-
         └── ...
-
 ```
 
 Para entidades relacionadas directamente con una carrera se utiliza:
@@ -358,15 +280,10 @@ Además de las columnas originales, cada registro conserva metadata como:
 ```text
 
 \_source_file
-
 \_source_file_name
-
 \_source_file_size
-
 \_source_file_modification_time
-
 \_ingested_at
-
 ```
 
 Y las particiones:
@@ -386,23 +303,14 @@ Esto permite conocer exactamente:
 ```text
 
 dato
-
   ↓
-
 archivo
-
   ↓
-
 carrera
-
   ↓
-
 temporada
-
   ↓
-
 momento de ingestión
-
 ```
 
 ---
@@ -418,13 +326,9 @@ Conceptualmente:
 Landing
 
    │
-
    ├─ archivo ya procesado ───────────► ignorar
-
    │
-
    └─ archivo nuevo/modificado ───────► Bronze
-
 ```
 
 Para detectar cambios se puede utilizar metadata como:
@@ -576,9 +480,7 @@ Representa el calendario de Grandes Premios.
 Granularidad:
 
 ```text
-
 1 fila = 1 carrera
-
 ```
 
 Clave lógica:
@@ -982,47 +884,32 @@ Cada tabla Silver se alimenta principalmente de una entidad Bronze.
 ```text
 
 bronze.events
-
      ↓
-
 silver.races
 
 bronze.drivers
-
      ↓
-
 silver.drivers
 
 bronze.constructors
-
      ↓
-
 silver.constructors
 
 bronze.race_results
-
      ↓
-
 silver.race_results
 
 bronze.qualifying_results
-
      ↓
-
 silver.qualifying_results
 
 bronze.laps
-
      ↓
-
 silver.laps
 
 bronze.pit_stops
-
      ↓
-
 silver.pit_stops
-
 ```
 
 La metadata permite mantener trazabilidad hacia Landing.
@@ -1038,41 +925,25 @@ Patrón:
 ```text
 
 Bronze
-
    │
-
    ▼
-
 Transform
-
    │
-
    ▼
-
 Calculate record_hash
-
    │
-
    ▼
-
 MERGE
-
 ```
 
 Lógica conceptual:
 
 ```sql
-
 WHEN MATCHED
-
 AND target.record_hash <> source.record_hash
-
 THEN UPDATE
-
 WHEN NOT MATCHED
-
 THEN INSERT
-
 ```
 
 Esto evita reconstruir tablas completas innecesariamente.
@@ -1106,33 +977,19 @@ A diferencia de Silver, Gold ya puede:
 El modelo Gold sigue un esquema estrella.
 
 ```text
-
                    dim_driver
-
                        │
-
                        │
-
 dim_constructor ─── fact_race_result ─── dim_race
-
                        │
-
                        │
-
                  fact_qualifying
-
                        │
-
                        │
-
                     fact_lap
-
                        │
-
                        │
-
                  fact_pit_stop
-
 ```
 
 ---
@@ -1279,7 +1136,7 @@ Granularidad:
 
 ```text
 
-1 piloto × 1 carrera
+1 piloto x 1 carrera
 
 ```
 
@@ -1325,7 +1182,7 @@ Granularidad:
 
 ```text
 
-1 piloto × 1 carrera
+1 piloto x 1 carrera
 
 ```
 
@@ -1361,7 +1218,7 @@ Granularidad:
 
 ```text
 
-1 piloto × 1 vuelta × 1 carrera
+1 piloto x 1 vuelta x 1 carrera
 
 ```
 
@@ -1774,49 +1631,27 @@ Ejemplo para vueltas:
 ```text
 
 F1 API
-
    │
-
    ▼
-
 laps_results.parquet
-
    │
-
    ▼
-
 landing/laps/season=2025/round=01/
-
    │
-
    ▼
-
 workspace.bronze.laps
-
    │
-
    ▼
-
 workspace.silver.laps
-
    │
-
    ▼
-
 workspace.gold.fact_lap
-
    │
-
    ▼
-
 workspace.gold.vw_lap_performance
-
    │
-
    ▼
-
 Dashboard
-
 ```
 
 Para resultados:
@@ -1824,37 +1659,21 @@ Para resultados:
 ```text
 
 race_results.parquet
-
        │
-
        ▼
-
 bronze.race_results
-
        │
-
        ▼
-
 silver.race_results
-
        │
-
        ▼
-
 gold.fact_race_result
-
        │
-
        ├── vw_championship_standings
-
        ├── vw_constructor_standings
-
        ├── vw_race_results
-
        ├── vw_driver_season_summary
-
        └── vw_position_changes
-
 ```
 
 ---
@@ -1866,87 +1685,46 @@ La organización lógica en Databricks es:
 ```text
 
 workspace
-
 │
-
 ├── bronze
-
 │   ├── events
-
 │   ├── drivers
-
 │   ├── constructors
-
 │   ├── race_results
-
 │   ├── qualifying_results
-
 │   ├── laps
-
 │   ├── pit_stops
-
 │   └── weather
-
 │
-
 ├── silver
-
 │   ├── races
-
 │   ├── drivers
-
 │   ├── constructors
-
 │   ├── race_results
-
 │   ├── qualifying_results
-
 │   ├── laps
-
 │   └── pit_stops
-
 │
-
 └── gold
-
     ├── dim_driver
-
     ├── dim_constructor
-
     ├── dim_race
-
     │
-
     ├── fact_race_result
-
     ├── fact_qualifying
-
     ├── fact_lap
-
     ├── fact_pit_stop
-
     │
-
     ├── vw_championship_standings
-
     ├── vw_constructor_standings
-
     ├── vw_race_results
-
     ├── vw_driver_season_summary
-
     ├── vw_constructor_season_summary
-
     ├── vw_qualifying_performance
-
     ├── vw_lap_performance
-
     ├── vw_fastest_laps
-
     ├── vw_pit_stop_analysis
-
     └── vw_position_changes
-
 ```
 
 
@@ -1962,67 +1740,36 @@ El pipeline final conceptualmente sería:
 ```text
 
                   INGESTION
-
                      │
-
                      ▼
-
           Azure Function / Lambda
-
                      │
-
                      ▼
-
                   LANDING
-
                      │
-
                      ▼
-
              Bronze ingestion
-
                      │
-
                      ▼
-
                   BRONZE
-
                      │
-
                      ▼
-
             Silver transformations
-
                      │
-
                      ▼
-
                   SILVER
-
                      │
-
                      ▼
-
                Gold model
-
                      │
-
                      ▼
-
                    GOLD
-
                      │
-
                      ▼
-
               SQL Warehouse
-
                      │
-
                      ▼
-
                Dashboard
-
 ```
 
 ---
@@ -2120,13 +1867,9 @@ Cada registro Silver debe poder rastrearse hasta:
 ```text
 
 Silver
-
   ↓
-
 Bronze
-
   ↓
-
 Landing file
 
 ```
@@ -2184,22 +1927,16 @@ La granularidad es uno de los elementos más importantes para evitar duplicacion
 ```text
 
                          FORMULA 1 LAKEHOUSE
-
                                   │
-
                                   ▼
-
 ┌───────────────────────────────────────────────────────────────┐
 │ LANDING                                                       │
 │                                                               │
 │ Parquet                                                       │
 │ season=YYYY / round=NN                                        │
 └──────────────────────────────┬────────────────────────────────┘
-
                                │
-
                                ▼
-
 ┌───────────────────────────────────────────────────────────────┐
 │ BRONZE                                                        │
 │                                                               │
@@ -2207,11 +1944,8 @@ La granularidad es uno de los elementos más importantes para evitar duplicacion
 │ Source metadata                                               │
 │ Incremental ingestion                                         │
 └──────────────────────────────┬────────────────────────────────┘
-
                                │
-
                                ▼
-
 ┌───────────────────────────────────────────────────────────────┐
 │ SILVER                                                        │
 │                                                               │
@@ -2222,11 +1956,8 @@ La granularidad es uno de los elementos más importantes para evitar duplicacion
 │ record_hash                                                   │
 │ MERGE                                                         │
 └──────────────────────────────┬────────────────────────────────┘
-
                                │
-
                                ▼
-
 ┌───────────────────────────────────────────────────────────────┐
 │ GOLD                                                          │
 │                                                               │
@@ -2234,11 +1965,8 @@ La granularidad es uno de los elementos más importantes para evitar duplicacion
 │ Facts                                                         │
 │ Analytical Views                                              │
 └──────────────────────────────┬────────────────────────────────┘
-
                                │
-
                                ▼
-
 ┌───────────────────────────────────────────────────────────────┐
 │ DASHBOARD                                                     │
 │                                                               │
