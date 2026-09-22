@@ -22,7 +22,7 @@ import fastf1
 YEAR = 2025
 DIRECTORIO_ACTUAL = Path(__file__).resolve().parent
 
-carpeta_destino = DIRECTORIO_ACTUAL / "landing" / str(YEAR) / "schedule"
+carpeta_destino = DIRECTORIO_ACTUAL / "landing" / 'events' /f'season={YEAR}'
 
 print(DIRECTORIO_ACTUAL)
 
@@ -70,9 +70,17 @@ for fila in schedule.itertuples():
     print(f"Ronda: {fila.RoundNumber}, País: {fila.Country}, Ubicación: {fila.Location}")
     race_number = f'{fila.RoundNumber:02d}'
 
-    # carpeta_race = Path(f"C:/coursera/formula1/landing/{YEAR}/race_{race_number:02d}")
-    carpeta_race = DIRECTORIO_ACTUAL / "landing" / str(YEAR) / f"race_{race_number}"
+    carpeta_race = DIRECTORIO_ACTUAL / "landing" / 'race_results' /f'season={YEAR}' / f"round={race_number}"
     carpeta_race.mkdir(parents=True, exist_ok=True)
+
+    carpeta_qualifying = DIRECTORIO_ACTUAL / "landing" / 'qualifying_results' /f'season={YEAR}' / f"round={race_number}"
+    carpeta_qualifying.mkdir(parents=True, exist_ok=True)
+
+    carpeta_laps = DIRECTORIO_ACTUAL / "landing" / 'laps' /f'season={YEAR}' / f"round={race_number}"
+    carpeta_laps.mkdir(parents=True, exist_ok=True)
+
+    carpeta_weather = DIRECTORIO_ACTUAL / "landing" / 'weather' /f'season={YEAR}' / f"round={race_number}"
+    carpeta_weather.mkdir(parents=True, exist_ok=True)
 
     try:
         session = fastf1.get_session(YEAR,fila.RoundNumber,"R")
@@ -85,7 +93,7 @@ for fila in schedule.itertuples():
         )
 
         session.laps.to_parquet(
-            carpeta_race / 'laps_results.parquet',
+            carpeta_laps / 'laps_results.parquet',
             index=False,
             engine='fastparquet'
         )
@@ -95,7 +103,7 @@ for fila in schedule.itertuples():
             engine='fastparquet'
         )
         session.weather_data.to_parquet(
-            carpeta_race / 'weather_data.parquet',
+            carpeta_weather / 'weather_data.parquet',
             index=False,
             engine='fastparquet'
         )
@@ -103,6 +111,7 @@ for fila in schedule.itertuples():
         print(f"✅ Carrera {race_number}, {fila.Country}")
     except Exception as e:
         print(f"❌ Carrera {race_number}: {e}")
+        count += 1
         continue
 
     try:
@@ -116,7 +125,7 @@ for fila in schedule.itertuples():
         )
 
         session.results.to_parquet(
-            carpeta_race / 'qualifying_results.parquet',
+            carpeta_qualifying / 'qualifying_results.parquet',
             index=False,
             engine='fastparquet'
         )
@@ -124,6 +133,7 @@ for fila in schedule.itertuples():
         print(f"✅ Qualifying {race_number}, {fila.Country}")
     except Exception as e:
         print(f"❌ Qualifyin {race_number}: {e}")
+        count += 1
         continue
 
     count += 1
