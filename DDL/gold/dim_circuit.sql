@@ -1,7 +1,7 @@
-CREATE TABLE IF NOT EXISTS workspace.gold.dim_circuit (
+CREATE OR REPLACE TABLE workspace.gold.dim_circuit (
     circuit_key BIGINT NOT NULL,
 
-    circuit_id_derived STRING NOT NULL,
+    circuit_id STRING NOT NULL,
     country STRING,
     location STRING,
 
