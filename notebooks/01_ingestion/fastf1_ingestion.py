@@ -50,7 +50,13 @@ schedule = schedule[[
 schedule = schedule[schedule['EventName'].str.contains('Grand Prix', na=False)]
 
 # # 5. Guarda el DataFrame usando la ruta correcta
-schedule.to_parquet(ruta_final_archivo, index=False, engine='fastparquet')
+schedule.to_parquet(
+    ruta_final_archivo,
+    index=False,
+    engine="pyarrow",
+    coerce_timestamps="us",
+    allow_truncated_timestamps=True
+)
 
 
 
@@ -95,17 +101,23 @@ for fila in schedule.itertuples():
         session.laps.to_parquet(
             carpeta_laps / 'laps_results.parquet',
             index=False,
-            engine='fastparquet'
+            engine="pyarrow",
+            coerce_timestamps="us",
+            allow_truncated_timestamps=True
         )
         session.results.to_parquet(
             carpeta_race / 'race_results.parquet',
             index=False,
-            engine='fastparquet'
+            engine="pyarrow",
+            coerce_timestamps="us",
+            allow_truncated_timestamps=True
         )
         session.weather_data.to_parquet(
             carpeta_weather / 'weather_data.parquet',
             index=False,
-            engine='fastparquet'
+            engine="pyarrow",
+            coerce_timestamps="us",
+            allow_truncated_timestamps=True
         )
 
         print(f"✅ Carrera {race_number}, {fila.Country}")
@@ -127,7 +139,9 @@ for fila in schedule.itertuples():
         session.results.to_parquet(
             carpeta_qualifying / 'qualifying_results.parquet',
             index=False,
-            engine='fastparquet'
+            engine="pyarrow",
+            coerce_timestamps="us",
+            allow_truncated_timestamps=True
         )
 
         print(f"✅ Qualifying {race_number}, {fila.Country}")
