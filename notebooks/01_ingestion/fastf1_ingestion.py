@@ -1,21 +1,24 @@
 # Databricks notebook source
-
 # MAGIC %md
 # MAGIC # Imports
-
+# MAGIC
 
 # COMMAND ----------
+
 import matplotlib.pyplot as plt
 from pathlib import Path
 import numpy as np
 import pandas as pd
 import fastf1
 
-# MAGIC %md
-# MAGIC # Variables
 # COMMAND ----------
 
-# Variable mas importante, aqui se debe de especificar que año se necesita
+# MAGIC %md
+# MAGIC # Variables
+
+# COMMAND ----------
+
+# YEAR variables must be setted before running
 YEAR = 2025
 DIRECTORIO_ACTUAL = Path(__file__).resolve().parent
 
@@ -23,9 +26,14 @@ carpeta_destino = DIRECTORIO_ACTUAL / "landing" / str(YEAR) / "schedule"
 
 print(DIRECTORIO_ACTUAL)
 
-schedule = fastf1.get_event_schedule(YEAR)
 # COMMAND ----------
 
+# MAGIC %md
+# MAGIC # Creación del scheduling
+
+# COMMAND ----------
+
+schedule = fastf1.get_event_schedule(YEAR)
 # # Crea la carpeta y todas sus carpetas superiores si no existen
 carpeta_destino.mkdir(parents=True, exist_ok=True)
 
@@ -43,6 +51,15 @@ schedule = schedule[schedule['EventName'].str.contains('Grand Prix', na=False)]
 
 # # 5. Guarda el DataFrame usando la ruta correcta
 schedule.to_parquet(ruta_final_archivo, index=False, engine='fastparquet')
+
+
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC # Creación de cada carrera
+
+# COMMAND ----------
 
 count = 0
 
@@ -110,4 +127,3 @@ for fila in schedule.itertuples():
         continue
 
     count += 1
-
