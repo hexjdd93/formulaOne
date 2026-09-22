@@ -1,0 +1,20 @@
+create or replace table workspace.silver.race_results (
+    season INT,
+    round INT,
+    driver_id STRING,
+    driver_number STRING,
+    constructor_id STRING,
+    finish_position INT,
+    classified_position STRING,
+    grid_position INT,
+    race_time_ms BIGINT,
+    gap_to_winner_ms BIGINT,
+    status STRING,
+    points DECIMAL(6,2),
+    laps_completed INT,
+    source_file STRING,
+    source_modified_at TIMESTAMP,
+    bronze_ingested_at TIMESTAMP,
+    record_hash STRING,
+    silver_updated_at TIMESTAMP
+)
